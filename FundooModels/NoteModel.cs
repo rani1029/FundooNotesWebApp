@@ -9,16 +9,15 @@ namespace FundooModel
     {
         [Key]
         public int NoteId { get; set; }
-        public string UserEmail { get; set; }
+        public string Email { get; set; }
         public string Title { get; set; }
-        public string MyNote { get; set; }
-        public bool DeleteNote { get; set; }
-        public string AddLabel { get; set; }
-        public bool Pin { get; set; }
-        public string Colors { get; set; }
-        public string RemindMe { get; set; }
-        public bool Archive { get; set; }
-        public string Trash { get; set; }
-        public DateTime Date { get; set; }
+        public string Description { get; set; }
+        public DateTime? CreatedDate { get; set; }
+        public string Image { get; set; }
+        public string Colour { get; set; }
+        public string Reminder { get; set; }
+        public bool IsArchive { get; set; }
+        public bool IsTrash { get; set; }
+        public bool IsPin { get; set; }
     }
 }

@@ -22,7 +22,7 @@ namespace FundooManager.Manager
 
         public string UpdateNotes(NoteModel model)
         {
-            return repository.UpdateNotes(model);
+            return repository.UpdateNote(model);
         }
     }
 }

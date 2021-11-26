@@ -22,10 +22,10 @@ namespace FundooRepository.Repository
         {
             try
             {
-                var validUser = this.userContext.Users.Where(x => x.Email == noteData.UserEmail).FirstOrDefault();
+                var validUser = this.userContext.Users.Where(x => x.Email == noteData.Email).FirstOrDefault();
                 if (validUser != null)
                 {
-                    if (noteData.MyNote != null && noteData.Title != null)
+                    if (noteData.Description != null && noteData.Title != null)
                     {
                         this.userContext.Add(noteData);
                         this.userContext.SaveChanges();
@@ -39,15 +39,29 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
-        public string UpdateNotes(NoteModel model)
+
+        public IQueryable<NoteModel> GetAllNotes(string Email)
+        {
+            try
+            {
+                var noteList = this.userContext.Notes.Where(opt => opt.Email == Email && opt.IsTrash == false);
+                return noteList;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+        public string UpdateNote(NoteModel model)
         {
             try
             {
                 var exists = this.userContext.Notes.Where(x => x.NoteId == model.NoteId).SingleOrDefault();
                 if (exists != null)
                 {
-                    exists.MyNote = model.MyNote;
-                    exists.Title = model.Title;
+                    exists.Description = model.Description == null ? exists.Description : model.Description;
+                    exists.Title = model.Title == null ? exists.Title : model.Title;
                     this.userContext.Notes.Update(exists);
                     this.userContext.SaveChanges();
                     return "Note Updated Successfully !";

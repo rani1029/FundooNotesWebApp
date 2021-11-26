@@ -26,4 +26,8 @@
     <ProjectReference Include="..\FundooModels\FundooModels.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

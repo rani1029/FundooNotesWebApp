@@ -85,8 +85,8 @@ namespace FundooNotes.Controllers
                     return this.Ok(new ResponseModel<string>() { Status = true, Message = "login Successful" });
                 }
                 else
-                    //  return this.BadRequest(new ResponseModel<string>() { Status = false, Message = "login failed" });
-                    return this.Unauthorized();
+                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = "login failed" });
+                //return this.Unauthorized();
 
             }
             catch (Exception ex)

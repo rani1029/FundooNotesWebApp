@@ -31,6 +31,7 @@ namespace FundooRepository.Repository
         {
             try
             {
+                //Checking  the Email
                 var validEmail = this.userContext.Users.Where(x => x.Email == userData.Email).FirstOrDefault();
 
                 if (validEmail == null)

@@ -26,37 +26,34 @@ namespace FundooRepository.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AddLabel")
+                    b.Property<string>("Colour")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Archive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Colors")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("DeleteNote")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("MyNote")
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Pin")
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsArchive")
                         .HasColumnType("bit");
 
-                    b.Property<string>("RemindMe")
+                    b.Property<bool>("IsPin")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsTrash")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Reminder")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Trash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserEmail")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("NoteId");
