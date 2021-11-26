@@ -2,12 +2,15 @@
 using FundooModels;
 using FundooRepository.Context;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using StackExchange.Redis;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -138,6 +141,23 @@ namespace FundooRepository.Repository
             smtp.Credentials = new NetworkCredential("ranig1029@gmail.com", user.FirstName);
             smtp.Send(mailmessage);
             return true;
+        }
+        public string JWTTokenGeneration(string email)
+        {
+            byte[] key = Encoding.UTF8.GetBytes(this.Configuration["Key"]); //Encrypting secret key
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
+            SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                new Claim(ClaimTypes.Name, email)
+            }),
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
+            };
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler(); //creating and validating JWT
+            JwtSecurityToken token = handler.CreateJwtSecurityToken(descriptor);
+            return handler.WriteToken(token);
         }
 
 
