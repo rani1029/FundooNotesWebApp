@@ -1,4 +1,5 @@
 ﻿using FundooModels;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FundooManager.Manager
@@ -8,5 +9,6 @@ namespace FundooManager.Manager
         Task<string> Lable(LabelModel label);
         public Task<string> AddLabelsByUserId(LabelModel label);
         Task<string> RemoveLabel(int labelId);
+        IEnumerable<string> GetLabelByUserid(int userId);
     }
 }

@@ -27,5 +27,9 @@ namespace FundooManager.Manager
             return await repository.RemoveLabel(labelId);
 
         }
+        public IEnumerable<string> GetLabelByUserid(int userId)
+        {
+            return repository.GetLabelByUserid(userId);
+        }
     }
 }

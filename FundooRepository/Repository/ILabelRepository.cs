@@ -1,5 +1,6 @@
 ﻿using FundooModels;
 using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace FundooRepository.Repository
@@ -10,5 +11,6 @@ namespace FundooRepository.Repository
 
         Task<string> Lable(LabelModel label);
         Task<string> RemoveLabel(int labelId);
+        IEnumerable<string> GetLabelByUserid(int userId);
     }
 }
