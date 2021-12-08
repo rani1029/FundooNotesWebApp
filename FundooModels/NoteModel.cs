@@ -1,7 +1,9 @@
-﻿using System;
+﻿using FundooModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace FundooModel
@@ -11,6 +13,8 @@ namespace FundooModel
         [Key]
         public int NoteId { get; set; }
         public string Email { get; set; }
+        [ForeignKey("UserId")] ////As it creates relationship with Users table that this note should belongs to perticular userid
+        public RegisterModel registerModel { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime? CreatedDate { get; set; }
