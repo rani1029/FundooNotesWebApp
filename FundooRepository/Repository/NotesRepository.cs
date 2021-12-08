@@ -152,6 +152,28 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<string> AddReminder(int notesId, string remind)
+        {
+            try
+            {
+                var UserNoteId = this.userContext.Notes.Where(x => x.NoteId == notesId).SingleOrDefault();
+                if (UserNoteId != null)
+                {
+                    UserNoteId.Reminder = remind;
+                    this.userContext.Notes.Update(UserNoteId);
+                    await this.userContext.SaveChangesAsync();
+                    return "Reminder added successfully";
+                }
+                else
+                {
+                    return "This note does not exist";
+                }
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public async Task<string> AddImage(int noteId, IFormFile form)
         {
             try

@@ -13,6 +13,7 @@ namespace FundooManager.Manager
         bool PinUnpin(string email, int NoteId);
         bool TrashUntrash(string email, int NoteId);
         public IEnumerable<NoteModel> GetArchivedNoteList(string email);
+        public Task<string> AddReminder(int notesId, string remind);
         Task<string> EditColor(NoteModel noteData);
         bool DeleteNote(string email, int NoteId);
         public Task<string> AddImage(int noteId, IFormFile form);

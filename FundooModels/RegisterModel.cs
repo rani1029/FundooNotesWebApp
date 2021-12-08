@@ -9,7 +9,7 @@ namespace FundooModels
     {
         //annotation 
         //[Key]
-        //public int UserId { get; set; }
+        public int UserId { get; set; }
         [Required]
         [RegularExpression("@^[A-Z]{1}[A-Za-z]{2,}$", ErrorMessage = "Firstname is not valid. Please Enter valid FirstName")]
         public string FirstName { get; set; }

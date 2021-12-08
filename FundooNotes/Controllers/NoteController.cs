@@ -203,6 +203,27 @@ namespace FundooNotes.Controllers
             }
         }
         [HttpPut]
+        [Route("api/addremindme")]
+        public async Task<IActionResult> AddRemindMe(int notesId, string remind)
+        {
+            try
+            {
+                string result = await this.manager.AddReminder(notesId, remind);
+                if (result.Equals("Reminder added successfully"))
+                {
+                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result });
+                }
+                else
+                {
+                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
+            }
+        }
+        [HttpPut]
         [Route("api/addImage")]
         public async Task<IActionResult> AddImage(int notesId, IFormFile image)
         {

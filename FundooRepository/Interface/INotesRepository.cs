@@ -20,7 +20,7 @@ namespace FundooRepository.Repository
         public IEnumerable<NoteModel> GetArchivedNoteList(string email);
         public Task<string> AddImage(int noteId, IFormFile form);
 
-
+        public Task<string> AddReminder(int notesId, string remind);
         Task<string> EditColor(NoteModel noteData);
         //string AddImage(int noteId, IFormFile form);
         //IEnumerable<NoteModel> GetArchiveNotes(string email);

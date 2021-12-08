@@ -55,6 +55,10 @@ namespace FundooManager.Manager
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<string> AddReminder(int notesId, string remind)
+        {
+            return await repository.AddReminder(notesId, remind);
+        }
         public async Task<string> AddImage(int noteId, IFormFile form)
         {
             return await repository.AddImage(noteId, form);
