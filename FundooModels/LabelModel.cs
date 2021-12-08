@@ -7,7 +7,7 @@ using System.Text;
 
 namespace FundooModels
 {
-    class LabelModel
+    public class LabelModel
     {
         [Key]
         public int LabelId { get; set; }
