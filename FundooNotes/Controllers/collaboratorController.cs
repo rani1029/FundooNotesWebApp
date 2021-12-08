@@ -39,6 +39,27 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+        [HttpDelete]
+        [Route("api/deletecollaborator")]
+        public async Task<IActionResult> DeleteCollaborator(int noteId, string collabMail)
+        {
+            try
+            {
+                string result = await this.manager.DeleteCollaborator(noteId, collabMail);
+                if (result.Equals("Collaborator Removed"))
+                {
+                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result });
+                }
+                else
+                {
+                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
+            }
+        }
 
     }
 }

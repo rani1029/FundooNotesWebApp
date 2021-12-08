@@ -40,6 +40,26 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<string> DeleteCollaborator(int noteId, string collabMail)
+        {
+            try
+            {
+                ////It delete perticular collab mail wrt note id
+                var removeCollab = this.userContext.Collaborators.Where(x => x.NoteId == noteId && x.CollaboratorEmail == collabMail).SingleOrDefault();
+                if (removeCollab != null)
+                {
+                    this.userContext.Collaborators.Remove(removeCollab);
+                    await this.userContext.SaveChangesAsync();
+                    return " Collaborator Removed";
+                }
+                else
+                    return "No such Collaborator found!";
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
     }
 

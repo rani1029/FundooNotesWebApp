@@ -18,6 +18,14 @@ namespace FundooManager.Manager
         {
             return await repository.AddCollaborator(collaboratorUser);
         }
+        public async Task<string> DeleteCollaborator(int noteId, string collabMail)
+        {
+            return await repository.DeleteCollaborator(noteId, collabMail);
+        }
+        //public async Task<string> AddCollaborator(CollaboratorModel collaboratorUser)
+        //{
+        //    return await repository.AddCollaborator(collaboratorUser);
+        //}
 
 
 

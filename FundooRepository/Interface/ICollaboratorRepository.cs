@@ -8,5 +8,6 @@ namespace FundooRepository.Repository
     {
         IConfiguration Configuration { get; }
         public Task<string> AddCollaborator(CollaboratorModel collaboratorUser);
+        Task<string> DeleteCollaborator(int noteId, string collabMail);
     }
 }
