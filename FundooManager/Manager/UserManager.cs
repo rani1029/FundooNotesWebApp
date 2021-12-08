@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using FundooModels;
 using FundooRepository.Repository;
 
@@ -15,9 +16,42 @@ namespace FundooManager.Manager
         {
             this.repository = repository;
         }
-        public bool ForgotPassword(string Useremail)
+        public string Register(RegisterModel userData)
         {
-            return repository.ForgotPassword(Useremail);
+            try
+            {
+                return this.repository.Register(userData);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        public string LogIn(LoginModel login)
+        {
+            try
+            {
+                return this.repository.LogIn(login);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        public async Task<string> ResetPassword(ResetModel reset)
+        {
+            try
+            {
+                return await this.repository.ResetPassword(reset);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+        public bool ForgotPassword(string email)
+        {
+            return this.repository.ForgotPassword(email);
         }
         public string JWTTokenGeneration(string email)
         {
@@ -29,24 +63,21 @@ namespace FundooManager.Manager
             {
                 throw new Exception(e.Message);
             }
-            //public static string GenerateToken(string username)
-            //{
-            //    byte[] key = Convert.FromBase64String(Secret);
-            //    SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
-            //    SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
-            //    {
-            //        Subject = new ClaimsIdentity(new[] {
-            //        new Claim(ClaimTypes.Name, username)
-            //    }),
-            //        Expires = DateTime.UtcNow.AddMinutes(30),
-            //        SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
-            //    };
-            //    JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-            //    JwtSecurityToken token = handler.CreateJwtSecurityToken(descriptor);
-            //    return handler.WriteToken(token);
-            //}
-
         }
+        public string Encryption(string password)
+        {
+            try
+            {
+                return this.repository.Encryption(password);
+            }
+            catch (Exception e)
+            {
+                throw new Exception(e.Message);
+            }
+        }
+
+
+
 
     }
 }

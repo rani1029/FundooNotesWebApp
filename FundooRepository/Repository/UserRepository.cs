@@ -1,4 +1,5 @@
 ﻿using Experimental.System.Messaging;
+using FundooModel;
 using FundooModels;
 using FundooRepository.Context;
 using Microsoft.Extensions.Configuration;
@@ -13,6 +14,7 @@ using System.Net.Mail;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FundooRepository.Repository
 {
@@ -55,16 +57,27 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public string Encryption(string password)
+        {
+            MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+            byte[] encrypt;
+            UTF8Encoding encode = new UTF8Encoding();
+            //encrypt the given password string into Encrypted data  
+            encrypt = md5.ComputeHash(encode.GetBytes(password));
+            StringBuilder encryptdata = new StringBuilder();
+            //Create a new string by using the encrypted data  
+            for (int i = 0; i < encrypt.Length; i++)
+            {
+                encryptdata.Append(encrypt[i].ToString());
+            }
+            return encryptdata.ToString();
+        }
         public string LogIn(LoginModel logIn)
         {
             try
             {
                 var UserEmail = this.userContext.Users.Where(x => x.Email == logIn.Email).FirstOrDefault();
-                ConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect("127.0.0.1:6379");
-                IDatabase database = connectionMultiplexer.GetDatabase();
-                string FirstName = database.StringGet("FirstName");
-                string LastName = database.StringGet("LastName");
-                //Httpse
+
                 if (UserEmail != null)
                 {
                     logIn.Password = this.Encryption(logIn.Password);
@@ -75,6 +88,10 @@ namespace FundooRepository.Repository
                     }
                     else
                     {
+                        ConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect("127.0.0.1:6379");
+                        IDatabase database = connectionMultiplexer.GetDatabase();
+                        database.StringSet(key: "First Name", existingPassword.FirstName);
+                        database.StringSet(key: "Last Name", existingPassword.LastName);
                         return "Login Successful ";
 
                     }
@@ -86,14 +103,37 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
-
-        private string Encryption(string password)
+        public async Task<string> ResetPassword(ResetModel reset)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var existEmail = this.userContext.Users.Where(x => x.Email == reset.Email).FirstOrDefault(); ////checking the email present in the DB or not
+                if (reset != null)
+                {
+                    ////Encrypting the password
+                    existEmail.Password = this.Encryption(reset.NewPassword);
+                    ////Update the data in the database
+                    this.userContext.Update(existEmail);
+                    ////Save the change in database
+                    await this.userContext.SaveChangesAsync();
+                    return "Password Updated Successfully";
+                }
+
+                return "Reset Password is Unsuccssful";
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
+
+
 
         public bool ForgotPassword(string email)
         {
+            //var validUser = this.userContext.Users.Where(x => x.Email == email).FirstOrDefault();
+            //if (validUser != null)
+            //{
             string url = "Go to this link and reset your Password https://localhost:44396/api/ResetPassword";
             // for sending message in MSMQ
             MessageQueue msgqueue;
@@ -124,6 +164,7 @@ namespace FundooRepository.Repository
                 return true;
             }
             return false;
+            //}
         }
 
         private bool Sendmail(string email, string message)

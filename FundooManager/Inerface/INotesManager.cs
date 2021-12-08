@@ -1,10 +1,20 @@
 ﻿using FundooModel;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FundooManager.Manager
 {
     public interface INotesManager
     {
         string CreateNote(NoteModel noteData);
-        string UpdateNotes(NoteModel noteData);
+        string UpdateNote(NoteModel model);
+        bool ArchiveUnArchive(string email, int NoteId);
+        bool PinUnpin(string email, int NoteId);
+        bool TrashUntrash(string email, int NoteId);
+        public IEnumerable<NoteModel> GetArchivedNoteList(string email);
+        Task<string> EditColor(NoteModel noteData);
+        bool DeleteNote(string email, int NoteId);
+        public Task<string> AddImage(int noteId, IFormFile form);
     }
 }
