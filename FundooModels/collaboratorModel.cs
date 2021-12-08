@@ -7,7 +7,7 @@ using System.Text;
 
 namespace FundooModels
 {
-    public class collaboratorModel
+    public class CollaboratorModel
     {
         [Key]
         public int CollaboratorID { get; set; }

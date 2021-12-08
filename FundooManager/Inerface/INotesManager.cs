@@ -1,4 +1,5 @@
 ﻿using FundooModel;
+using FundooModels;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -17,5 +18,6 @@ namespace FundooManager.Manager
         Task<string> EditColor(NoteModel noteData);
         bool DeleteNote(string email, int NoteId);
         public Task<string> AddImage(int noteId, IFormFile form);
+        //Task<string> AddCollaborator(CollaboratorModel collaboratorUser);
     }
 }
