@@ -63,5 +63,25 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<string> RemoveLabel(int labelId)
+        {
+            try
+            {
+                var validLabel = this.userContext.Labels.Where(x => x.LabelId == labelId).SingleOrDefault();
+                if (validLabel != null)
+                {
+                    this.userContext.Labels.Remove(validLabel);
+                    await this.userContext.SaveChangesAsync();
+                    return "Deleted Label From Note";
+                }
+
+                return "No such label Found";
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
     }
 }

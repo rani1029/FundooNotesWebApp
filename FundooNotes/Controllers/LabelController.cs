@@ -66,5 +66,27 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+        [HttpDelete]
+        [Route("removelable")]
+        public async Task<IActionResult> RemoveLabel(int labelId)
+        {
+            try
+            {
+                string result = await this.labelmanager.RemoveLabel(labelId);
+
+                if (result.Equals("Deleted Label From Note"))
+                {
+                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result });
+                }
+                else
+                {
+                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
+            }
+        }
     }
 }

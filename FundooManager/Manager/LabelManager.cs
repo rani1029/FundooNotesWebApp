@@ -22,6 +22,10 @@ namespace FundooManager.Manager
         {
             return await repository.Lable(label);
         }
+        public async Task<string> RemoveLabel(int labelId)
+        {
+            return await repository.RemoveLabel(labelId);
 
+        }
     }
 }

@@ -7,5 +7,6 @@ namespace FundooManager.Manager
     {
         Task<string> Lable(LabelModel label);
         public Task<string> AddLabelsByUserId(LabelModel label);
+        Task<string> RemoveLabel(int labelId);
     }
 }

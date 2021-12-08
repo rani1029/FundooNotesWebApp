@@ -9,5 +9,6 @@ namespace FundooRepository.Repository
         IConfiguration Configuration { get; }
 
         Task<string> Lable(LabelModel label);
+        Task<string> RemoveLabel(int labelId);
     }
 }
