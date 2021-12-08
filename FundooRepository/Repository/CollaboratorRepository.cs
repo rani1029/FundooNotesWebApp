@@ -60,7 +60,25 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public IEnumerable<string> GetCollaborator(int noteId)
+        {
+            try
+            {
+                IEnumerable<string> collaborators = from note in this.userContext.Collaborators where note.NoteId == noteId select note.CollaboratorEmail;
+                //IEnumerable<int> collaborators = this.userContext.Collaborators.Where(x => x.NoteId == noteId);
+                if (collaborators != null)
+                {
+                    return collaborators;
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+
+        }
 
     }
-
 }

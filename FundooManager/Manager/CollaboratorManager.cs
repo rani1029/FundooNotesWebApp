@@ -22,10 +22,10 @@ namespace FundooManager.Manager
         {
             return await repository.DeleteCollaborator(noteId, collabMail);
         }
-        //public async Task<string> AddCollaborator(CollaboratorModel collaboratorUser)
-        //{
-        //    return await repository.AddCollaborator(collaboratorUser);
-        //}
+        public IEnumerable<string> GetCollaborator(int noteId)
+        {
+            return repository.GetCollaborator(noteId);
+        }
 
 
 

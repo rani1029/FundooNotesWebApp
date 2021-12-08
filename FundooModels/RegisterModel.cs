@@ -8,7 +8,7 @@ namespace FundooModels
     public class RegisterModel
     {
         //annotation 
-        //[Key]
+        [Key]
         public int UserId { get; set; }
         [Required]
         [RegularExpression("@^[A-Z]{1}[A-Za-z]{2,}$", ErrorMessage = "Firstname is not valid. Please Enter valid FirstName")]
@@ -16,7 +16,8 @@ namespace FundooModels
         [Required]
         [RegularExpression("@^[A-Z]{1}[A-Za-z]{2,}$", ErrorMessage = "Lastname is not valid. Please Enter valid FirstName")]
         public string LastName { get; set; }
-        [Key]
+        //[Key]
+        [Required]
         [RegularExpression(@"^[A-Za-z0-9]+([\.+\-_][A-Za-z0-9]+)*@[a-zA-Z0-9]+\.?[A-Za-z]+\.?[A-Za-z]{2,}$", ErrorMessage = "E-mail is not valid. Please Enter valid email")]
         public string Email { get; set; }
         [Required]

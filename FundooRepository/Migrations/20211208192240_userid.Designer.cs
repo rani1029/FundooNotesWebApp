@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FundooRepository.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20211126185515_lohg")]
-    partial class lohg
+    [Migration("20211208192240_userid")]
+    partial class userid
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -63,10 +63,39 @@ namespace FundooRepository.Migrations
                     b.ToTable("Notes");
                 });
 
+            modelBuilder.Entity("FundooModels.CollaboratorModel", b =>
+                {
+                    b.Property<int>("CollaboratorID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("CollaboratorEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NoteId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("noteModelNoteId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CollaboratorID");
+
+                    b.HasIndex("noteModelNoteId");
+
+                    b.ToTable("Collaborators");
+                });
+
             modelBuilder.Entity("FundooModels.RegisterModel", b =>
                 {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
                     b.Property<string>("Email")
-                        .HasColumnType("nvarchar(450)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -80,9 +109,16 @@ namespace FundooRepository.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Email");
+                    b.HasKey("UserId");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("FundooModels.CollaboratorModel", b =>
+                {
+                    b.HasOne("FundooModel.NoteModel", "noteModel")
+                        .WithMany()
+                        .HasForeignKey("noteModelNoteId");
                 });
 #pragma warning restore 612, 618
         }
