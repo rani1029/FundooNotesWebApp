@@ -8,9 +8,6 @@ using System.Text;
 
 namespace FundooModel
 {
-    /// <summary>
-    /// model class of note
-    /// </summary>
     public class NoteModel
     {
         [Key]
