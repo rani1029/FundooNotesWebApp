@@ -136,22 +136,6 @@ namespace FundooRepository.Repository
             }
         }
 
-        public string EditLabel(LabelModel labelModel)
-        {
-            try
-            {
-                var validLabel = this.userContext.Labels.Where(x => x.UserId == labelModel.UserId && x.LabelId == labelModel.LabelId).Select(x => x.LabelName).SingleOrDefault();
-                var oldLabelname = this.userContext.Labels.Where(x => x.LabelName == validLabel).ToList();
-                oldLabelname.ForEach(x => x.LabelName = labelModel.LabelName);
-                this.userContext.Labels.UpdateRange(oldLabelname);
-                this.userContext.SaveChangesAsync();
-                return "Label updated";
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
 
         public async Task<string> EditLabel(int userId, string labelName, string newLabelName)
         {

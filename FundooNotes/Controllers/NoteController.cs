@@ -105,11 +105,11 @@ namespace FundooNotes.Controllers
         /// <returns>response</returns>
         [HttpPut]
         [Route("api/ArchiveNote")]
-        public IActionResult ArchiveUnArchiveNote([FromBody] NoteModel noteData)
+        public IActionResult ArchiveUnArchiveNote(string email, int NoteId)
         {
             try
             {
-                bool result = this.manager.ArchiveUnArchive(noteData.Email, noteData.NoteId);
+                bool result = this.manager.ArchiveUnArchive(email, NoteId);
                 if (result)
                 {
                     return this.Ok(new ResponseModel<string>() { Status = true, Message = "successful", Data = " Session data" });
@@ -131,11 +131,11 @@ namespace FundooNotes.Controllers
         /// <returns>response</returns>
         [HttpPut]
         [Route("api/PinUnpinNote")]
-        public IActionResult PinUnpinNote([FromBody] NoteModel noteData)
+        public IActionResult PinUnpinNote(string email, int NoteId)
         {
             try
             {
-                bool result = this.manager.PinUnpin(noteData.Email, noteData.NoteId);
+                bool result = this.manager.PinUnpin(email, NoteId);
                 if (result)
                 {
                     return this.Ok(new ResponseModel<string>() { Status = true, Message = "successful", Data = " Session data" });
@@ -157,11 +157,11 @@ namespace FundooNotes.Controllers
         /// <returns></returns>
         [HttpPut]
         [Route("api/TrashUntrashNote")]
-        public IActionResult TrashUntrash([FromBody] NoteModel noteData)
+        public IActionResult TrashUntrash(string email, int NoteId)
         {
             try
             {
-                bool result = this.manager.TrashUntrash(noteData.Email, noteData.NoteId);
+                bool result = this.manager.TrashUntrash(email, NoteId);
                 if (result)
                 {
                     return this.Ok(new ResponseModel<string>() { Status = true, Message = "successful", Data = " Session data" });
@@ -183,11 +183,11 @@ namespace FundooNotes.Controllers
         /// <returns>reponse</returns>
         [HttpDelete]
         [Route("api/DeleteNote")]
-        public IActionResult DeleteNote([FromBody] NoteModel noteData)
+        public IActionResult DeleteNote(string email, int id)
         {
             try
             {
-                bool result = this.manager.DeleteNote(noteData.Email, noteData.NoteId);
+                bool result = this.manager.DeleteNote(email, id);
                 if (result)
                 {
                     return this.Ok(new ResponseModel<string>() { Status = true, Message = "successful", Data = " Session data" });
@@ -215,11 +215,11 @@ namespace FundooNotes.Controllers
         /// <returns>response</returns>
         [HttpGet]
         [Route("api/GetArchivedNoteList")]
-        public IActionResult GetArchivedNoteList(NoteModel noteData)
+        public IActionResult GetArchivedNoteList(string email)
         {
             try
             {
-                IEnumerable<NoteModel> result = this.manager.GetArchivedNoteList(noteData.Email);
+                IEnumerable<NoteModel> result = this.manager.GetArchivedNoteList(email);
                 if (result != null)
                 {
                     return this.Ok(result);
