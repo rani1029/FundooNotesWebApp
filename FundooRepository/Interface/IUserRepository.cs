@@ -14,6 +14,5 @@ namespace FundooRepository.Repository
         string LogIn(LoginModel login);
         Task<string> ResetPassword(ResetModel reset);
         string Encryption(string password);
-
     }
 }

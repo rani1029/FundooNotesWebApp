@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FundooRepository.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20211208212708_lablesmodel")]
-    partial class lablesmodel
+    [Migration("20211210234933_labeltype")]
+    partial class labeltype
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -81,12 +81,10 @@ namespace FundooRepository.Migrations
                     b.Property<int>("NoteId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("noteModelNoteId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CollaboratorID");
-
-                    b.HasIndex("noteModelNoteId");
 
                     b.ToTable("Collaborators");
                 });
@@ -150,13 +148,6 @@ namespace FundooRepository.Migrations
                     b.HasOne("FundooModels.RegisterModel", "registerModel")
                         .WithMany()
                         .HasForeignKey("UserId");
-                });
-
-            modelBuilder.Entity("FundooModels.CollaboratorModel", b =>
-                {
-                    b.HasOne("FundooModel.NoteModel", "noteModel")
-                        .WithMany()
-                        .HasForeignKey("noteModelNoteId");
                 });
 
             modelBuilder.Entity("FundooModels.LabelModel", b =>

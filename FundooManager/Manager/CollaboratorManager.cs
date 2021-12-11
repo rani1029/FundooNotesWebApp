@@ -14,17 +14,17 @@ namespace FundooManager.Manager
         {
             this.repository = repository;
         }
-        public async Task<string> AddCollaborator(CollaboratorModel collaboratorUser)
+        public bool AddCollaborator(CollaboratorModel collaboratorUser)
         {
-            return await repository.AddCollaborator(collaboratorUser);
+            return repository.AddCollaborator(collaboratorUser);
         }
-        public async Task<string> DeleteCollaborator(int noteId, string collabMail)
+        public string DeleteCollaborator(int CollabId)
         {
-            return await repository.DeleteCollaborator(noteId, collabMail);
+            return repository.DeleteCollaborator(CollabId);
         }
-        public IEnumerable<string> GetCollaborator(int noteId)
+        public IEnumerable<string> GetCollaborators(int noteId)
         {
-            return repository.GetCollaborator(noteId);
+            return repository.GetCollaborators(noteId);
         }
 
 

@@ -1,26 +1,31 @@
-﻿using Experimental.System.Messaging;
-using FundooModel;
-using FundooModels;
-using FundooRepository.Context;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using StackExchange.Redis;
-using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Net;
-using System.Net.Mail;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace FundooRepository.Repository
 {
+    using Experimental.System.Messaging;
+    using FundooModel;
+    using FundooModels;
+    using FundooRepository.Context;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.IdentityModel.Tokens;
+    using StackExchange.Redis;
+    using System;
+    using System.Collections.Generic;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Mail;
+    using System.Security.Claims;
+    using System.Security.Cryptography;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    /// <summary>
+    /// repositopry class of user
+    /// </summary>
     public class UserRepository : IUserRepository
     {
         private readonly UserContext userContext;
+
         public UserRepository(IConfiguration configuration, UserContext userContext)
         {
             this.Configuration = configuration;
@@ -28,7 +33,11 @@ namespace FundooRepository.Repository
         }
 
         public IConfiguration Configuration { get; }
-
+        /// <summary>
+        /// registers new user
+        /// </summary>
+        /// <param name="userData"></param>
+        /// <returns>string value registration successful or not </returns>
         public string Register(RegisterModel userData)
         {
             try
@@ -57,6 +66,11 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// encrpts the password
+        /// </summary>
+        /// <param name="password"></param>
+        /// <returns>encrypted string password</returns>
         public string Encryption(string password)
         {
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
@@ -72,6 +86,12 @@ namespace FundooRepository.Repository
             }
             return encryptdata.ToString();
         }
+
+        /// <summary>
+        /// log in existing user
+        /// </summary>
+        /// <param name="logIn"></param>
+        /// <returns>login status string value</returns>
         public string LogIn(LoginModel logIn)
         {
             try
@@ -103,6 +123,11 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// resets the user password
+        /// </summary>
+        /// <param name="reset"></param>
+        /// <returns>string value whether password reset or not</returns>
         public async Task<string> ResetPassword(ResetModel reset)
         {
             try
@@ -127,7 +152,11 @@ namespace FundooRepository.Repository
             }
         }
 
-
+        /// <summary>
+        /// provide link to user to reset password
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>boolean value</returns>
 
         public bool ForgotPassword(string email)
         {
@@ -166,7 +195,12 @@ namespace FundooRepository.Repository
             return false;
             //}
         }
-
+        /// <summary>
+        /// sends mail to user email
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="message"></param>
+        /// <returns>boolean value/returns>
         private bool Sendmail(string email, string message)
         {
             var user = userContext.Users.FirstOrDefault(option => option.Email == "ranig1029@gmail.com");
@@ -184,6 +218,11 @@ namespace FundooRepository.Repository
             smtp.Send(mailmessage);
             return true;
         }
+        /// <summary>
+        /// generates token
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>token</returns>
         public string JWTTokenGeneration(string email)
         {
             byte[] key = Encoding.UTF8.GetBytes(this.Configuration["Key"]); //Encrypting secret key

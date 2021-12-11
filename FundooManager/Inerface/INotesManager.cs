@@ -15,9 +15,11 @@ namespace FundooManager.Manager
         bool TrashUntrash(string email, int NoteId);
         public IEnumerable<NoteModel> GetArchivedNoteList(string email);
         public Task<string> AddReminder(int notesId, string remind);
-        Task<string> EditColor(NoteModel noteData);
+        Task<string> EditColor(int noteId, string color);
         bool DeleteNote(string email, int NoteId);
         public Task<string> AddImage(int noteId, IFormFile form);
+        IEnumerable<NoteModel> GetNote(int note);
+        IEnumerable<NoteModel> GetAllNotes(int userId);
         //Task<string> AddCollaborator(CollaboratorModel collaboratorUser);
     }
 }

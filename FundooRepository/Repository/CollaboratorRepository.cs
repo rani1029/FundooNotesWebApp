@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace FundooRepository.Repository
 {
+    /// <summary>
+    /// repository class of collaborator
+    /// </summary>
     public class CollaboratorRepository : ICollaboratorRepository
     {
         private readonly UserContext userContext;
@@ -20,7 +23,12 @@ namespace FundooRepository.Repository
 
         public IConfiguration Configuration { get; }
 
-        public async Task<string> AddCollaborator(CollaboratorModel collaboratorUser)
+        /// <summary>
+        /// method to add new collaborator
+        /// </summary>
+        /// <param name="collaboratorUser"></param>
+        /// <returns></returns>
+        public bool AddCollaborator(CollaboratorModel collaboratorUser)
         {
             try
             {
@@ -28,11 +36,11 @@ namespace FundooRepository.Repository
                 if (result != null)
                 {
                     this.userContext.Collaborators.Add(collaboratorUser);
-                    await this.userContext.SaveChangesAsync();
-                    return "new Collaborator Added";
+                    this.userContext.SaveChanges();
+                    return true;
                 }
                 else
-                    return "No such Note found!";
+                    return false;
 
             }
             catch (ArgumentNullException ex)
@@ -40,17 +48,23 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
-        public async Task<string> DeleteCollaborator(int noteId, string collabMail)
+
+        /// <summary>
+        /// deletes collaborator
+        /// </summary>
+        /// <param name="collabId"></param>
+        /// <returns>delete successful or not in string</returns>
+        public string DeleteCollaborator(int collabId)
         {
             try
             {
-                ////It delete perticular collab mail wrt note id
-                var removeCollab = this.userContext.Collaborators.Where(x => x.NoteId == noteId && x.CollaboratorEmail == collabMail).SingleOrDefault();
+
+                var removeCollab = this.userContext.Collaborators.Where(x => x.CollaboratorID == collabId).SingleOrDefault();
                 if (removeCollab != null)
                 {
                     this.userContext.Collaborators.Remove(removeCollab);
-                    await this.userContext.SaveChangesAsync();
-                    return " Collaborator Removed";
+                    this.userContext.SaveChanges();
+                    return "Collaborator Removed";
                 }
                 else
                     return "No such Collaborator found!";
@@ -60,12 +74,17 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
-        public IEnumerable<string> GetCollaborator(int noteId)
+
+        /// <summary>
+        /// gets all the collaborator for one noteid
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <returns>collaborators email for one note</returns>
+        public IEnumerable<string> GetCollaborators(int noteId)
         {
             try
             {
                 IEnumerable<string> collaborators = from note in this.userContext.Collaborators where note.NoteId == noteId select note.CollaboratorEmail;
-                //IEnumerable<int> collaborators = this.userContext.Collaborators.Where(x => x.NoteId == noteId);
                 if (collaborators != null)
                 {
                     return collaborators;

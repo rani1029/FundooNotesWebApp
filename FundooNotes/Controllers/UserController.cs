@@ -7,7 +7,6 @@ using FundooModels;
 using FundooManager.Manager;
 using Microsoft.EntityFrameworkCore;
 using FundooRepository.Context;
-using FundooNotes.Utilities;
 using FundooModel;
 using StackExchange.Redis;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,7 +18,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace FundooNotes.Controllers
 {
-    // [Route("User")]
+
     public class UserController : ControllerBase
     {
         private readonly IUserManager manager;
@@ -32,6 +31,11 @@ namespace FundooNotes.Controllers
 
             this.configuration = configuration;
         }
+        /// <summary>
+        /// api to register new user
+        /// </summary>
+        /// <param name="userData"></param>
+        /// <returns>registration status successful or not</returns>
         [HttpPost]
         [Route("api/Register")]
         public IActionResult Register([FromBody] RegisterModel userData)
@@ -52,6 +56,11 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+        /// <summary>
+        /// api to user login
+        /// </summary>
+        /// <param name="login"></param>
+        /// <returns>string value user login successful or not</returns>
         [HttpPost]
         [Route("api/LogIn")]
         public IActionResult LogIn([FromBody] LoginModel login)
@@ -59,7 +68,7 @@ namespace FundooNotes.Controllers
             try
             {
                 string result = this.manager.LogIn(login);
-                if (result.Equals("Login Successful"))
+                if (result.Equals("Login Successful "))
                 {
 
                     ConnectionMultiplexer connectionMultiplexer = ConnectionMultiplexer.Connect("127.0.0.1:6379");
@@ -90,7 +99,11 @@ namespace FundooNotes.Controllers
             }
         }
 
-
+        /// <summary>
+        /// api to reset user password
+        /// </summary>
+        /// <param name="reset"></param>
+        /// <returns>response</returns>
         [HttpPut]
         [Route("api/ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetModel reset)
@@ -115,7 +128,11 @@ namespace FundooNotes.Controllers
             }
         }
 
-
+        /// <summary>
+        /// api to forget password
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>reponse</returns>
 
         [HttpPost]
         [Route("api/ForgotPassword")]

@@ -117,7 +117,6 @@ namespace FundooNotes
                             pattern: "{controller=Home}/{action=Index}/{id?}");//pattern of routing in mvc with default values
                 });
 
-            //app.UseSwaggerUI();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

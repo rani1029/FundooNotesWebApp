@@ -19,17 +19,17 @@ namespace FundooRepository.Repository
         }
         public IConfiguration Configuration { get; }
 
-        public async Task<string> Lable(LabelModel label)
+        public async Task<string> AddLabel(LabelModel label)
         {
             try
             {
-                var validLabel = this.userContext.Labels.Where(x => x.UserId == label.UserId && x.NoteId == label.NoteId).FirstOrDefault();
+                var validLabel = this.userContext.Labels.Where(x => x.UserId == label.UserId && x.LabelName != label.LabelName && x.NoteId == null).SingleOrDefault();
                 if (validLabel == null)
                 {
                     // Add the data to the database
-                    this.userContext.Add(label);
+                    this.userContext.Labels.Add(label);
                     await this.userContext.SaveChangesAsync();
-                    return "Lable is added Successfully";
+                    return "Label is added Successfully";
                 }
                 else
                 {
@@ -45,13 +45,13 @@ namespace FundooRepository.Repository
         {
             try
             {
-                var validLabel = this.userContext.Labels.Where(x => x.UserId == label.UserId && x.LabelName != label.LabelName).FirstOrDefault();
-                if (validLabel != null)
+                var validLabel = this.userContext.Labels.Where(x => x.UserId == label.UserId && x.NoteId == label.NoteId).SingleOrDefault();
+                if (validLabel == null)
                 {
                     // Add the data to the database
                     this.userContext.Add(label);
                     await this.userContext.SaveChangesAsync();
-                    return "Lable is added Successfully";
+                    return "Label is added Successfully";
                 }
                 else
                 {
@@ -82,6 +82,25 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public async Task<string> DeleteLabel(int userId, string labelName)
+        {
+            try
+            {
+                var exists = this.userContext.Labels.Where(x => x.LabelName == labelName && x.UserId == userId).FirstOrDefault();
+                if (exists != null)
+                {
+                    this.userContext.Labels.Remove(exists);
+                    await this.userContext.SaveChangesAsync();
+                    return "Deleted Label";
+                }
+
+                return "No Label Present";
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
         public IEnumerable<string> GetLabelByUserid(int userId)
         {
             try
@@ -99,6 +118,83 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public IEnumerable<LabelModel> GetLabelByNote(int notesId)
+        {
+            try
+            {
+                IEnumerable<LabelModel> validLabel = this.userContext.Labels.Where(x => x.NoteId == notesId);
+                if (validLabel != null)
+                {
+                    return validLabel;
+                }
 
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public string EditLabel(LabelModel labelModel)
+        {
+            try
+            {
+                var validLabel = this.userContext.Labels.Where(x => x.UserId == labelModel.UserId && x.LabelId == labelModel.LabelId).Select(x => x.LabelName).SingleOrDefault();
+                var oldLabelname = this.userContext.Labels.Where(x => x.LabelName == validLabel).ToList();
+                oldLabelname.ForEach(x => x.LabelName = labelModel.LabelName);
+                this.userContext.Labels.UpdateRange(oldLabelname);
+                this.userContext.SaveChangesAsync();
+                return "Label updated";
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<string> EditLabel(int userId, string labelName, string newLabelName)
+        {
+            try
+            {
+                var exist = this.userContext.Labels.Where(x => x.LabelName == labelName && x.UserId == userId).SingleOrDefault();
+                if (exist != null)
+                {
+                    exist.LabelName = newLabelName;
+                    this.userContext.Labels.Update(exist);
+                    await this.userContext.SaveChangesAsync();
+
+                    return "Updated Label";
+                }
+
+                return "Label not present";
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task<string> EditLabelWithNoteId(int noteId, string labelName, string newLabelName)
+        {
+            try
+            {
+                var exist = this.userContext.Labels.Where(x => x.LabelName == labelName && x.NoteId == noteId).SingleOrDefault();
+                if (exist != null)
+                {
+                    exist.LabelName = newLabelName;
+                    this.userContext.Labels.Update(exist);
+                    await this.userContext.SaveChangesAsync();
+
+                    return "Updated Label";
+                }
+
+                return "Label not present";
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

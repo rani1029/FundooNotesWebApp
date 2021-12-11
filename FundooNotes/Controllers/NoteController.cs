@@ -12,10 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FundooNotes.Controllers
 {
-    //[Produces("application/json")]
-    //[Route("[controller]")]
-    //[ApiController]
-    //[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+
+    //[Authorize]
     public class NoteController : ControllerBase
     {
         private readonly INotesManager manager;
@@ -25,7 +23,11 @@ namespace FundooNotes.Controllers
             this.manager = notesManager;
 
         }
-
+        /// <summary>
+        /// api to create new note
+        /// </summary>
+        /// <param name="noteData"></param>
+        /// <returns>response </returns>
         [HttpPost]
         [Route("api/Createnote")]
         public IActionResult CreateNote([FromBody] NoteModel noteData)
@@ -47,6 +49,11 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+        /// <summary>
+        /// api to update note
+        /// </summary>
+        /// <param name="noteData"></param>
+        /// <returns>reponse</returns>
         [HttpPut]
         [Route("api/UpdateNotes")]
         public IActionResult UpdateNote([FromBody] NoteModel noteData)
@@ -68,6 +75,34 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+
+        [HttpGet]
+        [Route("api/GetNote")]
+        public IActionResult GetNote(int note)
+        {
+            try
+            {
+                IEnumerable<NoteModel> result = this.manager.GetNote(note);
+                if (result != null)
+                {
+                    return this.Ok(result);
+                }
+                else
+                {
+                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = "failed" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// api to archive and unarhive
+        /// </summary>
+        /// <param name="noteData"></param>
+        /// <returns>response</returns>
         [HttpPut]
         [Route("api/ArchiveNote")]
         public IActionResult ArchiveUnArchiveNote([FromBody] NoteModel noteData)
@@ -89,6 +124,11 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+        /// <summary>
+        /// api to pin and unpin note
+        /// </summary>
+        /// <param name="noteData"></param>
+        /// <returns>response</returns>
         [HttpPut]
         [Route("api/PinUnpinNote")]
         public IActionResult PinUnpinNote([FromBody] NoteModel noteData)
@@ -110,6 +150,11 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+        /// <summary>
+        /// api to trash and untrash note
+        /// </summary>
+        /// <param name="noteData"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("api/TrashUntrashNote")]
         public IActionResult TrashUntrash([FromBody] NoteModel noteData)
@@ -131,6 +176,11 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+        /// <summary>
+        /// api to delete note 
+        /// </summary>
+        /// <param name="noteData"></param>
+        /// <returns>reponse</returns>
         [HttpDelete]
         [Route("api/DeleteNote")]
         public IActionResult DeleteNote([FromBody] NoteModel noteData)
@@ -158,6 +208,11 @@ namespace FundooNotes.Controllers
                 });
             }
         }
+        /// <summary>
+        /// api to get all archived note 
+        /// </summary>
+        /// <param name="noteData"></param>
+        /// <returns>response</returns>
         [HttpGet]
         [Route("api/GetArchivedNoteList")]
         public IActionResult GetArchivedNoteList(NoteModel noteData)
@@ -180,14 +235,18 @@ namespace FundooNotes.Controllers
             }
         }
 
-
+        /// <summary>
+        /// api to change note color
+        /// </summary>
+        /// <param name="noteData"></param>
+        /// <returns>response</returns>
         [HttpPut]
         [Route("api/editColor")]
-        public async Task<IActionResult> EditColor([FromBody] NoteModel noteData)
+        public async Task<IActionResult> EditColor(int noteId, string color)
         {
             try
             {
-                string result = await this.manager.EditColor(noteData);
+                string result = await this.manager.EditColor(noteId, color);
                 if (result.Equals("Successfully change color"))
                 {
                     return this.Ok(new ResponseModel<string>() { Status = true, Message = result, Data = " Session data" });
@@ -202,6 +261,12 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+        /// <summary>
+        /// api to add remind me 
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <param name="remind"></param>
+        /// <returns>response</returns>
         [HttpPut]
         [Route("api/addremindme")]
         public async Task<IActionResult> AddRemindMe(int notesId, string remind)
@@ -223,6 +288,12 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+        /// <summary>
+        /// api to add image
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <param name="image"></param>
+        /// <returns>response</returns>
         [HttpPut]
         [Route("api/addImage")]
         public async Task<IActionResult> AddImage(int notesId, IFormFile image)
@@ -240,6 +311,29 @@ namespace FundooNotes.Controllers
             catch (Exception ex)
             {
                 return this.NotFound(new ResponseModel<string>() { Status = true, Message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("api/getallnotes")]
+        public IActionResult GetAllNotes(int userId)
+        {
+            try
+            {
+                IEnumerable<NoteModel> result = this.manager.GetAllNotes(userId);
+
+                if (result.Equals(null))
+                {
+                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = "No note exists whose data is data is to be retrieved" });
+                }
+                else
+                {
+                    return this.Ok(new ResponseModel<IEnumerable<NoteModel>>() { Status = true, Message = "Data for all notes is retrived successfully", Data = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new ResponseModel<string> { Status = false, Message = ex.Message });
             }
         }
     }

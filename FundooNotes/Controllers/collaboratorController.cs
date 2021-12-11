@@ -22,17 +22,21 @@ namespace FundooNotes.Controllers
         }
         [HttpPost]
         [Route("api/addcollaborator")]
-        public async Task<IActionResult> AddCollaborator([FromBody] CollaboratorModel collaboratorUser)
+        public IActionResult AddCollaborator([FromBody] CollaboratorModel collaboratorUser)
         {
             try
             {
-                string result = await this.manager.AddCollaborator(collaboratorUser);
-                if (result.Equals("new Collaborator Added"))
+                bool result = this.manager.AddCollaborator(collaboratorUser);
+                if (result)
                 {
-                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result });
+                    return this.Ok(new ResponseModel<string>() { Status = true, Message = "collaborator added." });
                 }
                 else
-                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = result });
+                    return this.BadRequest(new ResponseModel<string>()
+                    {
+                        Status = false,
+                        Message = "Collaborator cannot be added"
+                    });
             }
             catch (Exception ex)
             {
@@ -41,11 +45,11 @@ namespace FundooNotes.Controllers
         }
         [HttpDelete]
         [Route("api/deletecollaborator")]
-        public async Task<IActionResult> DeleteCollaborator(int noteId, string collabMail)
+        public IActionResult DeleteCollaborator(int CollabId)
         {
             try
             {
-                string result = await this.manager.DeleteCollaborator(noteId, collabMail);
+                string result = this.manager.DeleteCollaborator(CollabId);
                 if (result.Equals("Collaborator Removed"))
                 {
                     return this.Ok(new ResponseModel<string>() { Status = true, Message = result });
@@ -66,7 +70,7 @@ namespace FundooNotes.Controllers
         {
             try
             {
-                IEnumerable<string> result = this.manager.GetCollaborator(noteid);
+                IEnumerable<string> result = this.manager.GetCollaborators(noteid);
 
                 if (result.Equals(null))
                 {

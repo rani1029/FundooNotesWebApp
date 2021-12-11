@@ -7,7 +7,9 @@ namespace FundooModels
 {
     public class RegisterModel
     {
-        //annotation 
+        /// <summary>
+        /// model class of register user
+        /// </summary>
         [Key]
         public int UserId { get; set; }
         [Required]

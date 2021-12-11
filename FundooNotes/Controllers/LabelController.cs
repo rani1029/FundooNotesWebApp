@@ -22,12 +22,12 @@ namespace FundooNotes.Controllers
         }
         [HttpPost]
         [Route("api/notelabel")]
-        public async Task<IActionResult> AddLable([FromBody] LabelModel label
+        public async Task<IActionResult> AddLabel([FromBody] LabelModel label
             )
         {
             try
             {
-                string result = await this.labelmanager.Lable(label);
+                string result = await this.labelmanager.AddLabel(label);
 
                 if (result.Equals("Label is added Successfully"))
                 {
@@ -44,13 +44,13 @@ namespace FundooNotes.Controllers
             }
         }
         [HttpPost]
-        [Route("api/Adduserslabel")]
+        [Route("api/AddUserslabel")]
         public async Task<IActionResult> AddLabelbyUserId([FromBody] LabelModel label
             )
         {
             try
             {
-                string result = await this.labelmanager.Lable(label);
+                string result = await this.labelmanager.AddLabelsByUserId(label);
 
                 if (result.Equals("Label is added Successfully"))
                 {
@@ -67,7 +67,7 @@ namespace FundooNotes.Controllers
             }
         }
         [HttpDelete]
-        [Route("removelable")]
+        [Route("removelabel")]
         public async Task<IActionResult> RemoveLabel(int labelId)
         {
             try
@@ -82,6 +82,26 @@ namespace FundooNotes.Controllers
                 {
                     return this.BadRequest(new ResponseModel<string>() { Status = false, Message = result });
                 }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
+            }
+        }
+
+        [HttpDelete]
+        [Route("api/deleteLabel")]
+        public async Task<IActionResult> DeleteLabel(int userId, string labelName)
+        {
+            try
+            {
+                string result = await this.labelmanager.DeleteLabel(userId, labelName);
+                if (result == "Deleted Label")
+                {
+                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result });
+                }
+
+                return this.BadRequest(new ResponseModel<string>() { Status = false, Message = result });
             }
             catch (Exception ex)
             {
@@ -108,6 +128,68 @@ namespace FundooNotes.Controllers
             catch (Exception ex)
             {
                 return this.NotFound(new ResponseModel<string> { Status = false, Message = ex.Message });
+            }
+        }
+        [HttpGet]
+        [Route("getlabelbynotes")]
+        public IActionResult GetLabelByNote(int notesId)
+        {
+            try
+            {
+                IEnumerable<LabelModel> result = this.labelmanager.GetLabelByNote(notesId);
+
+                if (result.Equals(null))
+                {
+                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = "No label found" });
+                }
+                else
+                {
+                    return this.Ok(new ResponseModel<IEnumerable<LabelModel>>() { Status = true, Message = "Successfully Retrieved", Data = result });
+                }
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new ResponseModel<string> { Status = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [Route("api/editLabel")]
+        public async Task<IActionResult> EditLabel(int userId, string labelName, string newLabelName)
+        {
+            try
+            {
+                string result = await this.labelmanager.EditLabel(userId, labelName, newLabelName);
+                if (result != "Label not present")
+                {
+                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result });
+                }
+
+                return this.BadRequest(new ResponseModel<string>() { Status = false, Message = result });
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
+            }
+        }
+
+        [HttpPut]
+        [Route("api/editLabelwithNoteId")]
+        public async Task<IActionResult> EditLabelWithNoteId(int noteId, string labelName, string newLabelName)
+        {
+            try
+            {
+                string result = await this.labelmanager.EditLabel(noteId, labelName, newLabelName);
+                if (result != "Label not present")
+                {
+                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result });
+                }
+
+                return this.BadRequest(new ResponseModel<string>() { Status = false, Message = result });
+            }
+            catch (Exception ex)
+            {
+                return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
     }

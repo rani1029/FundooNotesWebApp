@@ -7,16 +7,18 @@ using System.Text;
 
 namespace FundooModels
 {
+    /// <summary>
+    /// model class of collaborator
+    /// </summary>
     public class CollaboratorModel
     {
+        /// <summary>
+        /// 
+        /// </summary>
         [Key]
         public int CollaboratorID { get; set; }
-
-        [ForeignKey("NotesModel")]
+        public string UserEmail { get; set; }
         public int NoteId { get; set; }
-
-        public NoteModel noteModel { get; set; }
-
         public string CollaboratorEmail { get; set; }
     }
 }

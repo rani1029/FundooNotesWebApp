@@ -28,6 +28,10 @@ namespace FundooManager.Manager
         {
             return repository.UpdateNote(model);
         }
+        public IEnumerable<NoteModel> GetNote(int Noteid)
+        {
+            return repository.GetNote(Noteid);
+        }
         public bool ArchiveUnArchive(string email, int NoteId)
         {
             return repository.ArchiveUnArchive(email, NoteId);
@@ -47,9 +51,9 @@ namespace FundooManager.Manager
 
 
 
-        public async Task<string> EditColor(NoteModel noteData)
+        public async Task<string> EditColor(int noteId, string color)
         {
-            try { return await this.repository.EditColor(noteData); }
+            try { return await this.repository.EditColor(noteId, color); }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
@@ -74,14 +78,11 @@ namespace FundooManager.Manager
                 throw new Exception(ex.Message);
             }
         }
-        //public IEnumerable<NoteModel> GetArchiveNotes(string email)
-        //{
-        //    try { return this.repository.GetArchiveNotes(email); }
-        //    catch (Exception ex)
-        //    {
-        //        throw new Exception(ex.Message);
-        //    }
-        //}
+
+        public IEnumerable<NoteModel> GetAllNotes(int userId)
+        {
+            return repository.GetAllNotes(userId);
+        }
 
     }
 }

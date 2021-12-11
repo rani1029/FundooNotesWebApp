@@ -12,6 +12,9 @@ using System.Threading.Tasks;
 
 namespace FundooRepository.Repository
 {
+    /// <summary>
+    /// repository class of notes
+    /// </summary>
     public class NotesRepository : INotesRepository
     {
         private readonly UserContext userContext;
@@ -20,21 +23,25 @@ namespace FundooRepository.Repository
             this.Configuration = configuration;
             this.userContext = userContext;
         }
+
         public IConfiguration Configuration { get; }
+
+        /// <summary>
+        /// method to create new note
+        /// </summary>
+        /// <param name="noteData"></param>
+        /// <returns> string successful or not</returns>
         public string CreateNote(NoteModel noteData)
         {
             try
             {
-                //var validUser = this.userContext.Users.Where(x => x.Email == noteData.Email).FirstOrDefault();
-                //if (validUser != null)
+                if (noteData.Description != null && noteData.Title != null)
                 {
-                    if (noteData.Description != null && noteData.Title != null)
-                    {
-                        this.userContext.Add(noteData);
-                        this.userContext.SaveChanges();
-                        return "Successfully created note";
-                    }
+                    this.userContext.Add(noteData);
+                    this.userContext.SaveChanges();
+                    return "Successfully created note";
                 }
+
                 return "Note Creation Failed ";
             }
             catch (Exception ex)
@@ -42,6 +49,12 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// updates existing note title or description
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns> note updation status</returns>
         public string UpdateNote(NoteModel model)
         {
             try
@@ -67,45 +80,87 @@ namespace FundooRepository.Repository
             }
         }
 
+        /// <summary>
+        /// Archives and UnArchives note
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="NoteId"></param>
+        /// <returns> boolean value</returns>
         public bool ArchiveUnArchive(string email, int NoteId)
         {
-            //string msg;
-            var note = this.userContext.Notes.FirstOrDefault(option => option.Email == email && option.NoteId == NoteId);
-            if (note != null)
+            try
             {
-                bool doArchiUnArchive = note.IsArchive == true ? note.IsArchive = false : note.IsArchive = true;
-                this.userContext.Notes.Update(note);
-                this.userContext.SaveChanges();
-                return true;
+                var note = this.userContext.Notes.FirstOrDefault(option => option.Email == email && option.NoteId == NoteId);
+                if (note != null)
+                {
+                    bool doArchiUnArchive = note.IsArchive == true ? note.IsArchive = false : note.IsArchive = true;
+                    this.userContext.Notes.Update(note);
+                    this.userContext.SaveChanges();
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
+        /// <summary>
+        /// pin and unpin the note 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="NoteId"></param>
+        /// <returns> boolean value</returns>
         public bool PinUnpin(string email, int NoteId)
         {
-            //string msg;
-            var note = this.userContext.Notes.FirstOrDefault(option => option.Email == email && option.NoteId == NoteId);
-            if (note != null)
+            try
             {
-                bool doPinUnpine = note.IsPin == true ? note.IsPin = false : note.IsPin = true;
-                this.userContext.Notes.Update(note);
-                this.userContext.SaveChanges();
-                return true;
+                var note = this.userContext.Notes.FirstOrDefault(option => option.Email == email && option.NoteId == NoteId);
+                if (note != null)
+                {
+                    bool doPinUnpine = note.IsPin == true ? note.IsPin = false : note.IsPin = true;
+                    this.userContext.Notes.Update(note);
+                    this.userContext.SaveChanges();
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
+        /// <summary>
+        /// Trash and Untrash note
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="NoteId"></param>
+        /// <returns> Boolean value</returns>
         public bool TrashUntrash(string email, int NoteId)
         {
-            //string msg;
-            var note = this.userContext.Notes.FirstOrDefault(option => option.Email == email && option.NoteId == NoteId);
-            if (note != null)
+            try
             {
-                bool doTrashUntrash = note.IsTrash == true ? note.IsPin = false : note.IsPin = true;
-                this.userContext.Notes.Update(note);
-                this.userContext.SaveChanges();
-                return true;
+                var note = this.userContext.Notes.FirstOrDefault(option => option.Email == email && option.NoteId == NoteId);
+                if (note != null)
+                {
+                    bool doTrashUntrash = note.IsTrash == true ? note.IsPin = false : note.IsPin = true;
+                    this.userContext.Notes.Update(note);
+                    this.userContext.SaveChanges();
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
+        /// <summary>
+        /// permanantly deletes the note 
+        /// </summary>
+        /// <param name="email"></param>
+        /// <param name="id"></param>
+        /// <returns> boolean value</returns>
         public bool DeleteNote(string email, int id)
         {
             var note = this.userContext.Notes.FirstOrDefault(option => option.Email == email && option.NoteId == id);
@@ -121,27 +176,69 @@ namespace FundooRepository.Repository
 
             return false;
         }
-        public IEnumerable<NoteModel> GetArchivedNoteList(string email)
-        {
-            var result = this.userContext.Notes.Where(option => option.Email == email && option.IsArchive == true);
-            return result;
-        }
-        public IEnumerable<NoteModel> GetTrashedNoteList(string email)
-        {
-            var result = this.userContext.Notes.Where(option => option.Email == email && option.IsTrash == true);
-            return result;
-        }
 
-
-        public async Task<string> EditColor(NoteModel noteData)
+        public IEnumerable<NoteModel> GetNote(int Noteid)
         {
             try
             {
-                var validNoteId = this.userContext.Notes.Where(x => x.NoteId == noteData.NoteId).FirstOrDefault();
+                var result = this.userContext.Notes.Where(option => option.NoteId == Noteid && option.IsArchive == false && option.IsPin == false);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// gets all Archived notes
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns> all archived note </returns>
+        public IEnumerable<NoteModel> GetArchivedNoteList(string email)
+        {
+            try
+            {
+                var result = this.userContext.Notes.Where(option => option.Email == email && option.IsArchive == true);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+        /// <summary>
+        /// gets all trashed notes
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns> all trashed notes</returns>
+        public IEnumerable<NoteModel> GetTrashedNoteList(string email)
+        {
+            try
+            {
+                var result = this.userContext.Notes.Where(option => option.Email == email && option.IsTrash == true);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// changes color of the note
+        /// </summary>
+        /// <param name="noteData"></param>
+        /// <returns>color change successful or not </returns>
+        public async Task<string> EditColor(int noteId, string color)
+        {
+            try
+            {
+                var validNoteId = this.userContext.Notes.Where(x => x.NoteId == noteId).FirstOrDefault();
                 if (validNoteId != null)
                 {
-                    validNoteId.Colour = noteData.Colour;
-                    this.userContext.Update(validNoteId);
+                    validNoteId.Colour = color;
+                    this.userContext.Notes.Update(validNoteId);
                     await this.userContext.SaveChangesAsync();
                     return "Successfully change color";
                 }
@@ -152,6 +249,12 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// adds remind me feature to note
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <param name="remind"></param>
+        /// <returns> string value added or not </returns>
         public async Task<string> AddReminder(int notesId, string remind)
         {
             try
@@ -174,6 +277,12 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        /// <summary>
+        /// adds image to note using cloudnary
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <param name="form"></param>
+        /// <returns>string value image added or not</returns>
         public async Task<string> AddImage(int noteId, IFormFile form)
         {
             try
@@ -207,23 +316,27 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+        public IEnumerable<NoteModel> GetAllNotes(int userId)
+        {
+            try
+            {
+                IEnumerable<NoteModel> dataFromAllNotes = (from notes in this.userContext.Notes
+                                                           where notes.registerModel.UserId == userId && notes.IsArchive == false &&
+                                                           notes.IsTrash == false
+                                                           select notes);
+                if (dataFromAllNotes != null)
+                {
+                    return dataFromAllNotes;
+                }
+                return null;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
 
-        //public bool DeleteNote(string email, int id)
-        //{
-        //    var note = userContext.Notes.FirstOrDefault(option => option.Email == email && option.NoteId == id);
-        //    if (note != null)
-        //    {
-        //        userContext.Notes.Remove(note);
-        //        var result = userContext.SaveChanges();
-        //        if (result == 1)
-        //        {
-        //            return true;
-        //        }
-        //    }
-
-        //    return false;
-        //}
 
 
 

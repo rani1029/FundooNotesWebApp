@@ -19,9 +19,10 @@ namespace FundooRepository.Repository
         bool TrashUntrash(string email, int noteid);
         public IEnumerable<NoteModel> GetArchivedNoteList(string email);
         public Task<string> AddImage(int noteId, IFormFile form);
-
+        IEnumerable<NoteModel> GetNote(int noteid);
         public Task<string> AddReminder(int notesId, string remind);
-        Task<string> EditColor(NoteModel noteData);
+        Task<string> EditColor(int noteId, string color);
+        IEnumerable<NoteModel> GetAllNotes(int userId);
         //string AddImage(int noteId, IFormFile form);
         //IEnumerable<NoteModel> GetArchiveNotes(string email);
     }

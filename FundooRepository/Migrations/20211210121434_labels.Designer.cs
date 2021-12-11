@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FundooRepository.Migrations
 {
     [DbContext(typeof(UserContext))]
-    [Migration("20211208192240_userid")]
-    partial class userid
+    [Migration("20211210121434_labels")]
+    partial class labels
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -58,7 +58,12 @@ namespace FundooRepository.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("NoteId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Notes");
                 });
@@ -76,14 +81,38 @@ namespace FundooRepository.Migrations
                     b.Property<int>("NoteId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("noteModelNoteId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CollaboratorID");
 
-                    b.HasIndex("noteModelNoteId");
-
                     b.ToTable("Collaborators");
+                });
+
+            modelBuilder.Entity("FundooModels.LabelModel", b =>
+                {
+                    b.Property<int>("LabelId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("LabelName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NoteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("LabelId");
+
+                    b.HasIndex("NoteId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Labels");
                 });
 
             modelBuilder.Entity("FundooModels.RegisterModel", b =>
@@ -114,11 +143,26 @@ namespace FundooRepository.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("FundooModels.CollaboratorModel", b =>
+            modelBuilder.Entity("FundooModel.NoteModel", b =>
                 {
-                    b.HasOne("FundooModel.NoteModel", "noteModel")
+                    b.HasOne("FundooModels.RegisterModel", "registerModel")
                         .WithMany()
-                        .HasForeignKey("noteModelNoteId");
+                        .HasForeignKey("UserId");
+                });
+
+            modelBuilder.Entity("FundooModels.LabelModel", b =>
+                {
+                    b.HasOne("FundooModel.NoteModel", "NotesModel")
+                        .WithMany()
+                        .HasForeignKey("NoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("FundooModels.RegisterModel", "RegisterModel")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
