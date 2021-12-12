@@ -9,8 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FundooNotes.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    
     public class CollaboratorController : ControllerBase
     {
         private readonly ICollaboratorManager manager;
