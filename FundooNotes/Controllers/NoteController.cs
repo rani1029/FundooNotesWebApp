@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FundooNotes.Controllers
 {
 
-    //[Authorize]
+    [Authorize]
     public class NoteController : ControllerBase
     {
         private readonly INotesManager manager;
