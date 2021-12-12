@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FundooNotes.Controllers
 {
 
-    [Authorize]
+    //[Authorize]
     public class NoteController : ControllerBase
     {
         private readonly INotesManager manager;
@@ -85,7 +85,7 @@ namespace FundooNotes.Controllers
                 IEnumerable<NoteModel> result = this.manager.GetNote(note);
                 if (result != null)
                 {
-                    return this.Ok(result);
+                    return this.Ok(new ResponseModel<IEnumerable<NoteModel>>() { Status = true, Message = "Successfully Retrieved", Data = result });
                 }
                 else
                 {
@@ -222,7 +222,7 @@ namespace FundooNotes.Controllers
                 IEnumerable<NoteModel> result = this.manager.GetArchivedNoteList(email);
                 if (result != null)
                 {
-                    return this.Ok(result);
+                    return this.Ok(new ResponseModel<IEnumerable<NoteModel>>() { Status = true, Message = "Successfully Retrieved", Data = result });
                 }
                 else
                 {

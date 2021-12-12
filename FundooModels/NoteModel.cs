@@ -12,11 +12,9 @@ namespace FundooModel
     {
         [Key]
         public int NoteId { get; set; }
-        public string Email { get; set; }
-        [ForeignKey("UserId")] ////As it creates relationship with Users table that this note should belongs to perticular userid
-        public RegisterModel registerModel { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
+        public string Email { get; set; }
         public DateTime? CreatedDate { get; set; }
         public string Image { get; set; }
         public string Colour { get; set; }
@@ -27,5 +25,7 @@ namespace FundooModel
         public bool IsTrash { get; set; }
         [DefaultValue(false)]
         public bool IsPin { get; set; }
+        [ForeignKey("UserId")] ////As it creates relationship with Users table that this note should belongs to perticular userid
+        public RegisterModel registerModel { get; set; }
     }
 }
