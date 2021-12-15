@@ -16,7 +16,7 @@ namespace FundooManager.Manager
         {
             this.repository = repository;
         }
-        public string Register(RegisterModel userData)
+        public Task<string> Register(RegisterModel userData)
         {
             try
             {
@@ -49,7 +49,7 @@ namespace FundooManager.Manager
                 throw new Exception(e.Message);
             }
         }
-        public bool ForgotPassword(string email)
+        public string ForgotPassword(string email)
         {
             return this.repository.ForgotPassword(email);
         }
@@ -75,10 +75,6 @@ namespace FundooManager.Manager
                 throw new Exception(e.Message);
             }
         }
-
-
-
-
     }
 }
 

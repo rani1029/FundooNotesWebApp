@@ -9,7 +9,7 @@ namespace FundooManager.Manager
     public interface INotesManager
     {
         string CreateNote(NoteModel noteData);
-        string UpdateNote(NoteModel model);
+        public Task<string> UpdateNote(NoteModel model);
         bool ArchiveUnArchive(string email, int NoteId);
         bool PinUnpin(string email, int NoteId);
         bool TrashUntrash(string email, int NoteId);
@@ -20,6 +20,5 @@ namespace FundooManager.Manager
         public Task<string> AddImage(int noteId, IFormFile form);
         IEnumerable<NoteModel> GetNote(int note);
         IEnumerable<NoteModel> GetAllNotes(int userId);
-        //Task<string> AddCollaborator(CollaboratorModel collaboratorUser);
     }
 }

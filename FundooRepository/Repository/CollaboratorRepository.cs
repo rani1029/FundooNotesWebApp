@@ -14,13 +14,25 @@ namespace FundooRepository.Repository
     /// </summary>
     public class CollaboratorRepository : ICollaboratorRepository
     {
+        /// <summary>
+        /// user context object
+        /// </summary>
         private readonly UserContext userContext;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="configuration"></param>
+        /// <param name="userContext"></param>
         public CollaboratorRepository(IConfiguration configuration, UserContext userContext)
         {
             this.Configuration = configuration;
             this.userContext = userContext;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public IConfiguration Configuration { get; }
 
         /// <summary>
@@ -40,8 +52,9 @@ namespace FundooRepository.Repository
                     return true;
                 }
                 else
+                {
                     return false;
-
+                }
             }
             catch (ArgumentNullException ex)
             {
@@ -58,7 +71,6 @@ namespace FundooRepository.Repository
         {
             try
             {
-
                 var removeCollab = this.userContext.Collaborators.Where(x => x.CollaboratorID == collabId).SingleOrDefault();
                 if (removeCollab != null)
                 {
@@ -67,7 +79,9 @@ namespace FundooRepository.Repository
                     return "Collaborator Removed";
                 }
                 else
+                {
                     return "No such Collaborator found!";
+                }
             }
             catch (ArgumentNullException ex)
             {
@@ -89,15 +103,15 @@ namespace FundooRepository.Repository
                 {
                     return collaborators;
                 }
-
-                return null;
+                else
+                {
+                    return null;
+                }
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-
         }
-
     }
 }

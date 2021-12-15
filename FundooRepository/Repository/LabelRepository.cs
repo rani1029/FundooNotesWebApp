@@ -19,6 +19,11 @@ namespace FundooRepository.Repository
         }
         public IConfiguration Configuration { get; }
 
+        /// <summary>
+        /// creates new label
+        /// </summary>
+        /// <param name="label"></param>
+        /// <returns></returns>
         public async Task<string> AddLabel(LabelModel label)
         {
             try
@@ -41,6 +46,12 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// adds label 
+        /// </summary>
+        /// <param name="label"></param>
+        /// <returns></returns>
         public async Task<string> AddLabelsByUserId(LabelModel label)
         {
             try
@@ -63,6 +74,12 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// removes label
+        /// </summary>
+        /// <param name="labelId"></param>
+        /// <returns></returns>
         public async Task<string> RemoveLabel(int labelId)
         {
             try
@@ -82,6 +99,13 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// deletes label
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="labelName"></param>
+        /// <returns></returns>
         public async Task<string> DeleteLabel(int userId, string labelName)
         {
             try
@@ -101,6 +125,12 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// gets all label
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public IEnumerable<string> GetLabelByUserid(int userId)
         {
             try
@@ -118,6 +148,12 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+
+        /// <summary>
+        /// gets all label of a note
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
         public IEnumerable<LabelModel> GetLabelByNote(int notesId)
         {
             try
@@ -136,7 +172,13 @@ namespace FundooRepository.Repository
             }
         }
 
-
+        /// <summary>
+        /// edits label name
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="labelName"></param>
+        /// <param name="newLabelName"></param>
+        /// <returns></returns>
         public async Task<string> EditLabel(int userId, string labelName, string newLabelName)
         {
             try
@@ -159,6 +201,13 @@ namespace FundooRepository.Repository
             }
         }
 
+        /// <summary>
+        /// edits label of a note
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <param name="labelName"></param>
+        /// <param name="newLabelName"></param>
+        /// <returns></returns>
         public async Task<string> EditLabelWithNoteId(int noteId, string labelName, string newLabelName)
         {
             try

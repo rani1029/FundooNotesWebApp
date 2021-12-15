@@ -8,9 +8,9 @@ namespace FundooRepository.Repository
 {
     public interface IUserRepository
     {
-        bool ForgotPassword(string email);
+        string ForgotPassword(string email);
         string JWTTokenGeneration(string email);
-        string Register(RegisterModel userData);
+        Task<string> Register(RegisterModel userData);
         string LogIn(LoginModel login);
         Task<string> ResetPassword(ResetModel reset);
         string Encryption(string password);

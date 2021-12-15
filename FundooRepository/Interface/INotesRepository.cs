@@ -10,9 +10,7 @@ namespace FundooRepository.Repository
     public interface INotesRepository
     {
         string CreateNote(NoteModel noteData);
-        string UpdateNote(NoteModel model);
-        // NoteModel GetNote(string email, int id);
-        // IQueryable<NoteModel> GetAllNotes(string Email);
+        Task<string> UpdateNote(NoteModel model);
         bool DeleteNote(string email, int NoteId);
         bool ArchiveUnArchive(string email, int NoteId);
         bool PinUnpin(string email, int NoteId);
@@ -23,7 +21,5 @@ namespace FundooRepository.Repository
         public Task<string> AddReminder(int notesId, string remind);
         Task<string> EditColor(int noteId, string color);
         IEnumerable<NoteModel> GetAllNotes(int userId);
-        //string AddImage(int noteId, IFormFile form);
-        //IEnumerable<NoteModel> GetArchiveNotes(string email);
     }
 }

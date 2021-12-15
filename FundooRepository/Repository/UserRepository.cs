@@ -1,26 +1,25 @@
-﻿
+﻿using Experimental.System.Messaging;
+using FundooModel;
+using FundooModels;
+using FundooRepository.Context;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using StackExchange.Redis;
+using System;
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Net;
+using System.Net.Mail;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
+
 namespace FundooRepository.Repository
 {
-    using Experimental.System.Messaging;
-    using FundooModel;
-    using FundooModels;
-    using FundooRepository.Context;
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.IdentityModel.Tokens;
-    using StackExchange.Redis;
-    using System;
-    using System.Collections.Generic;
-    using System.IdentityModel.Tokens.Jwt;
-    using System.Linq;
-    using System.Net;
-    using System.Net.Mail;
-    using System.Security.Claims;
-    using System.Security.Cryptography;
-    using System.Text;
-    using System.Threading.Tasks;
-
     /// <summary>
-    /// repositopry class of user
+    /// repository class of user
     /// </summary>
     public class UserRepository : IUserRepository
     {
@@ -38,27 +37,27 @@ namespace FundooRepository.Repository
         /// </summary>
         /// <param name="userData"></param>
         /// <returns>string value registration successful or not </returns>
-        public string Register(RegisterModel userData)
+        public async Task<string> Register(RegisterModel userData)
         {
             try
             {
-                //Checking  the Email
+                ////Checking  the Email
                 var validEmail = this.userContext.Users.Where(x => x.Email == userData.Email).FirstOrDefault();
 
                 if (validEmail == null)
                 {
                     if (userData != null)
                     {
-                        // Encrypting the password
+                        //// Encrypting the password
                         userData.Password = this.Encryption(userData.Password);
-                        // Add the data to the database
+                        //// Add the data to the database
                         this.userContext.Add(userData);
-                        this.userContext.SaveChanges();
+                        await this.userContext.SaveChangesAsync();
                         return "Registration Successful";
-
                     }
                     return "Registration UnSuccessful";
                 }
+
                 return "Email Id Already Exists";
             }
             catch (ArgumentNullException ex)
@@ -66,24 +65,26 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+
         /// <summary>
         /// encrpts the password
         /// </summary>
-        /// <param name="password"></param>
+        /// <param name="password">encrypt</param>
         /// <returns>encrypted string password</returns>
         public string Encryption(string password)
         {
             MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
             byte[] encrypt;
             UTF8Encoding encode = new UTF8Encoding();
-            //encrypt the given password string into Encrypted data  
+            ////encrypt the given password string into Encrypted data  
             encrypt = md5.ComputeHash(encode.GetBytes(password));
             StringBuilder encryptdata = new StringBuilder();
-            //Create a new string by using the encrypted data  
+            ////Create a new string by using the encrypted data  
             for (int i = 0; i < encrypt.Length; i++)
             {
                 encryptdata.Append(encrypt[i].ToString());
             }
+
             return encryptdata.ToString();
         }
 
@@ -96,9 +97,9 @@ namespace FundooRepository.Repository
         {
             try
             {
-                var UserEmail = this.userContext.Users.Where(x => x.Email == logIn.Email).FirstOrDefault();
+                var userEmail = this.userContext.Users.Where(x => x.Email == logIn.Email).FirstOrDefault();
 
-                if (UserEmail != null)
+                if (userEmail != null)
                 {
                     logIn.Password = this.Encryption(logIn.Password);
                     var existingPassword = this.userContext.Users.Where(x => x.Password == logIn.Password).FirstOrDefault();
@@ -113,7 +114,6 @@ namespace FundooRepository.Repository
                         database.StringSet(key: "First Name", existingPassword.FirstName);
                         database.StringSet(key: "Last Name", existingPassword.LastName);
                         return "Login Successful ";
-
                     }
                 }
                 return "Email Id does not Exist,Please Register first";
@@ -123,6 +123,7 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
+
         /// <summary>
         /// resets the user password
         /// </summary>
@@ -157,67 +158,79 @@ namespace FundooRepository.Repository
         /// </summary>
         /// <param name="email"></param>
         /// <returns>boolean value</returns>
-
-        public bool ForgotPassword(string email)
+        public string ForgotPassword(string email)
         {
-            //var validUser = this.userContext.Users.Where(x => x.Email == email).FirstOrDefault();
-            //if (validUser != null)
-            //{
-            string url = "Go to this link and reset your Password https://localhost:44396/api/ResetPassword";
-            // for sending message in MSMQ
-            MessageQueue msgqueue;
-            if (MessageQueue.Exists(@".\Private$\FundooQueue"))
+            try
             {
-                msgqueue = new MessageQueue(@".\Private$\FundooQueue");
+                var existEmail = this.userContext.Users.Where(x => x.Email == email).FirstOrDefault(); ////checking the email present in the DB or not
+                if (existEmail != null)
+                {
+                    ////calling SMTP method to sent mail to the user 
+                    this.SMTPmail(email);
+                    return "Email sent to user";
+                }
+
+                return "Sending Email failed";
+            }
+            catch (ArgumentNullException ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// sends mail from application
+        /// </summary>
+        /// <param name="email"></param>
+        public void SMTPmail(string email)
+        {
+            MailMessage mailId = new MailMessage();
+            SmtpClient smtpServer = new SmtpClient("smtp.gmail.com"); ////allow App to sent email using SMTP 
+            mailId.From = new MailAddress(this.Configuration["Credentials:Email"]); ////contain mail id from where maill will send
+            mailId.To.Add(email); //// the user mail to which maill will be send
+            mailId.Subject = "forgot password issue";
+            this.SendMSMQ();
+            mailId.Body = this.ReceiveMSMQ();
+            smtpServer.Port = 587; ////Port no 
+            smtpServer.Credentials = new System.Net.NetworkCredential(this.Configuration["Credentials:Email"], this.Configuration["Credentials:Password"]);
+            smtpServer.EnableSsl = true;  ////specify smtpserver use ssl or not, default setting is false
+            smtpServer.Send(mailId);
+        }
+
+        /// <summary>
+        /// sets data to the queue
+        /// </summary>
+        public void SendMSMQ()
+        {
+            MessageQueue msgQueue; ////provide access to a queue in MSMQ
+                                   ////checking this private queue exists or not
+            if (MessageQueue.Exists(@".\Private$\fundooNote"))
+            {
+                msgQueue = new MessageQueue(@".\Private$\fundooNote"); ////Path for queue
             }
             else
             {
-                msgqueue = MessageQueue.Create(@".\Private$\FundooQueue");
+                msgQueue = MessageQueue.Create(@".\Private$\fundooNote");
             }
 
-            Message message = new Message();
-
-            message.Formatter = new BinaryMessageFormatter();
-            message.Body = url;
-            msgqueue.Label = "url link";
-            msgqueue.Send(message);
-
-            // for reading message from MSMQ
-            var receivequeue = new MessageQueue(@".\Private$\FundooQueue");
-            var receivemsg = receivequeue.Receive();
-            receivemsg.Formatter = new BinaryMessageFormatter();
-
-            string linktobesend = receivemsg.Body.ToString();
-            if (Sendmail(email, linktobesend))
-            {
-                return true;
-            }
-            return false;
-            //}
+            string body = "Please checkout the below url to create your new password";
+            msgQueue.Label = "MailBody"; ////Adding label to queue
+                                         ////Sending msg
+            msgQueue.Send(body);
         }
+
         /// <summary>
-        /// sends mail to user email
+        /// receives mail
         /// </summary>
-        /// <param name="email"></param>
-        /// <param name="message"></param>
-        /// <returns>boolean value/returns>
-        private bool Sendmail(string email, string message)
+        /// <returns>receives msg in queue</returns>
+        public string ReceiveMSMQ()
         {
-            var user = userContext.Users.FirstOrDefault(option => option.Email == "ranig1029@gmail.com");
-            MailMessage mailmessage = new MailMessage();
-            SmtpClient smtp = new SmtpClient();
-            mailmessage.From = new MailAddress("ranig1029@gmail.com");
-            mailmessage.To.Add(new MailAddress(email));
-            mailmessage.Subject = "Link to reset your passord for Fundoo Application";
-            mailmessage.IsBodyHtml = true;
-            mailmessage.Body = message;
-            smtp.Port = 587;
-            smtp.Host = "smtp.gmail.com";
-            smtp.EnableSsl = true;
-            smtp.Credentials = new NetworkCredential("ranig1029@gmail.com", user.FirstName);
-            smtp.Send(mailmessage);
-            return true;
+            var receivequeue = new MessageQueue(@".\Private$\fundooNote");
+            var receivemsg = receivequeue.Receive();
+            receivemsg.Formatter = new XmlMessageFormatter(new Type[] { typeof(string) });
+            return receivemsg.ToString();
         }
+
         /// <summary>
         /// generates token
         /// </summary>
@@ -225,7 +238,7 @@ namespace FundooRepository.Repository
         /// <returns>token</returns>
         public string JWTTokenGeneration(string email)
         {
-            byte[] key = Encoding.UTF8.GetBytes(this.Configuration["Key"]); //Encrypting secret key
+            byte[] key = Encoding.UTF8.GetBytes(this.Configuration["Key"]); ////Encrypting secret key
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
             SecurityTokenDescriptor descriptor = new SecurityTokenDescriptor
             {
@@ -236,11 +249,9 @@ namespace FundooRepository.Repository
                 Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature)
             };
-            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler(); //creating and validating JWT
+            JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler(); ////creating and validating JWT
             JwtSecurityToken token = handler.CreateJwtSecurityToken(descriptor);
             return handler.WriteToken(token);
         }
-
-
     }
 }

@@ -7,7 +7,6 @@ namespace FundooRepository.Repository
 {
     public interface ICollaboratorRepository
     {
-        IConfiguration Configuration { get; }
         public bool AddCollaborator(CollaboratorModel collaboratorUser);
         string DeleteCollaborator(int collabId);
         IEnumerable<string> GetCollaborators(int noteId);

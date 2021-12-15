@@ -15,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace FundooNotes.Controllers
 {
@@ -23,14 +24,14 @@ namespace FundooNotes.Controllers
     {
         private readonly IUserManager manager;
 
-        private readonly IConfiguration configuration;
+        private readonly ILogger<UserController> logger;
 
-        public UserController(IUserManager manager, IConfiguration configuration)
+        public UserController(IUserManager manager, ILogger<UserController> logger)
         {
             this.manager = manager;
-
-            this.configuration = configuration;
+            this.logger = logger;
         }
+
         /// <summary>
         /// api to register new user
         /// </summary>
@@ -43,6 +44,7 @@ namespace FundooNotes.Controllers
             try
             {
                 var validEmail = this.manager.Register(userData);
+                this.logger.LogInformation("New user added successfully with userid " + userData.UserId + " & firstname:" + userData.FirstName);
                 if (validEmail.Equals("Registration Successful"))
                 {
 
@@ -53,6 +55,7 @@ namespace FundooNotes.Controllers
             }
             catch (Exception ex)
             {
+                this.logger.LogWarning("Exception caught while adding new user" + ex.Message);
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
@@ -140,36 +143,22 @@ namespace FundooNotes.Controllers
         {
             try
             {
-                bool validUser = this.manager.ForgotPassword(email);
-                if (validUser == true)
+                string validUser = this.manager.ForgotPassword(email);
+                if (validUser.Equals("Email sent to user"))
                 {
-                    //manager.ForgotPassword(email.Email);
-                    return this.Ok(new ResponseModel<string>() { Status = true, Message = "A link has been sent to you email", Data = " Session data" });
+                    return this.Ok(new ResponseModel<string>() { Status = true, Message = validUser });
                 }
                 else
-                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = "user not registered", Data = " Session data" });
+                {
+                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = validUser });
+                }
             }
             catch (Exception ex)
             {
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
 
             }
-            //}
-
-            //private string GetToken(string userEmail)
-            //{
-            //    var claim = new[] { new Claim(JwtRegisteredClaimNames.Email, userEmail) };
-            //    var signkey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]));
-            //    int expiryminutes = Convert.ToInt32(this.configuration["Jwt:ExpiryInMinutes"]);
-            //    var tokenValue = new JwtSecurityToken(
-            //        issuer: this.configuration["Jwt:Issuer"],
-            //        audience: this.configuration["Jwt:Issuer"],
-            //        expires: DateTime.UtcNow.AddMinutes(expiryminutes),
-            //        signingCredentials: new SigningCredentials(signkey, SecurityAlgorithms.HmacSha256));
-            //    var token = new JwtSecurityTokenHandler().WriteToken(tokenValue);
-            //    return token;
-            //}
-
         }
+
     }
 }

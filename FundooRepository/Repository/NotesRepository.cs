@@ -55,7 +55,7 @@ namespace FundooRepository.Repository
         /// </summary>
         /// <param name="model"></param>
         /// <returns> note updation status</returns>
-        public string UpdateNote(NoteModel model)
+        public async Task<string> UpdateNote(NoteModel model)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace FundooRepository.Repository
                         exists.Description = model.Description == null ? exists.Description : model.Description;
                         exists.Title = model.Title == null ? exists.Title : model.Title;
                         this.userContext.Notes.Update(exists);
-                        this.userContext.SaveChanges();
+                        await this.userContext.SaveChangesAsync();
                         return "Note Updated Successfully!";
                     }
                 }
@@ -335,15 +335,16 @@ namespace FundooRepository.Repository
                 throw new Exception(ex.Message);
             }
         }
-
-
-
-
-
-
-
-
-
-
     }
 }
+
+
+
+
+
+
+
+
+
+
+

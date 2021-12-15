@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FundooNotes.Controllers
 {
 
-    //[Authorize]
+    [Authorize]
     public class NoteController : ControllerBase
     {
         private readonly INotesManager manager;
@@ -37,7 +37,7 @@ namespace FundooNotes.Controllers
                 string result = this.manager.CreateNote(noteData);
                 if (result.Equals("Successfully created note"))
                 {
-                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result, Data = " Session data" });
+                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result, });
                 }
                 else
                 {
@@ -56,18 +56,18 @@ namespace FundooNotes.Controllers
         /// <returns>reponse</returns>
         [HttpPut]
         [Route("api/UpdateNotes")]
-        public IActionResult UpdateNote([FromBody] NoteModel noteData)
+        public async Task<IActionResult> UpdateNote([FromBody] NoteModel noteData)
         {
             try
             {
-                string result = this.manager.UpdateNote(noteData);
+                string result = await this.manager.UpdateNote(noteData);
                 if (result.Equals("Note Updated Successfully!"))
                 {
-                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result, Data = " Session data" });
+                    return this.Ok(new ResponseModel<string>() { Status = true, Message = result });
                 }
                 else
                 {
-                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = result });
+                    return this.BadRequest(new ResponseModel<string>() { Status = false, Message = " failed" });
                 }
             }
             catch (Exception ex)
@@ -76,6 +76,11 @@ namespace FundooNotes.Controllers
             }
         }
 
+        /// <summary>
+        /// api to get note
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("api/GetNote")]
         public IActionResult GetNote(int note)
@@ -124,6 +129,7 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+
         /// <summary>
         /// api to pin and unpin note
         /// </summary>
@@ -150,6 +156,7 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+
         /// <summary>
         /// api to trash and untrash note
         /// </summary>
@@ -176,6 +183,7 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+
         /// <summary>
         /// api to delete note 
         /// </summary>
@@ -197,9 +205,7 @@ namespace FundooNotes.Controllers
                     return this.BadRequest(new ResponseModel<string>() { Status = false, Message = "failed" });
                 }
             }
-
-
-            catch (Exception ex)
+                catch (Exception ex)
             {
                 return this.NotFound(new ResponseModel<string>()
                 {
@@ -314,6 +320,11 @@ namespace FundooNotes.Controllers
             }
         }
 
+        /// <summary>
+        /// gets all notes
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("api/getallnotes")]
         public IActionResult GetAllNotes(int userId)

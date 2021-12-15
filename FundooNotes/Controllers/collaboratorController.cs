@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FundooNotes.Controllers
 {
-    
+
     public class CollaboratorController : ControllerBase
     {
         private readonly ICollaboratorManager manager;
@@ -19,6 +19,12 @@ namespace FundooNotes.Controllers
             this.manager = collaboratorManager;
 
         }
+
+        /// <summary>
+        /// api to add new collaborator
+        /// </summary>
+        /// <param name="collaboratorUser"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/addcollaborator")]
         public IActionResult AddCollaborator([FromBody] CollaboratorModel collaboratorUser)
@@ -42,6 +48,12 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// api to deletes label
+        /// </summary>
+        /// <param name="CollabId"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("api/deletecollaborator")]
         public IActionResult DeleteCollaborator(int CollabId)
@@ -63,6 +75,12 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// api to get all collaborator of note
+        /// </summary>
+        /// <param name="noteid"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("api/getCollaborator")]
         public IActionResult GetCollaborator(int noteid)

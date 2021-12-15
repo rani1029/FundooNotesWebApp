@@ -17,16 +17,14 @@ namespace FundooManager.Manager
             this.repository = repository;
         }
 
-
-
         public string CreateNote(NoteModel noteData)
         {
             return repository.CreateNote(noteData);
         }
 
-        public string UpdateNote(NoteModel model)
+        public async Task<string> UpdateNote(NoteModel model)
         {
-            return repository.UpdateNote(model);
+            return await repository.UpdateNote(model);
         }
         public IEnumerable<NoteModel> GetNote(int Noteid)
         {
@@ -49,8 +47,6 @@ namespace FundooManager.Manager
             return repository.TrashUntrash(email, NoteId);
         }
 
-
-
         public async Task<string> EditColor(int noteId, string color)
         {
             try { return await this.repository.EditColor(noteId, color); }
@@ -68,7 +64,6 @@ namespace FundooManager.Manager
             return await repository.AddImage(noteId, form);
 
         }
-
 
         public bool DeleteNote(string email, int NoteId)
         {

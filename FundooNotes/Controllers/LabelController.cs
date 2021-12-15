@@ -9,8 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace FundooNotes.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+
     public class LabelController : ControllerBase
     {
         private readonly ILabelManager labelmanager;
@@ -20,6 +19,12 @@ namespace FundooNotes.Controllers
             this.labelmanager = labelmanager;
 
         }
+
+        /// <summary>
+        /// api to add new label
+        /// </summary>
+        /// <param name="label"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/notelabel")]
         public async Task<IActionResult> AddLabel([FromBody] LabelModel label
@@ -43,6 +48,12 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// api to add label 
+        /// </summary>
+        /// <param name="label"></param>
+        /// <returns></returns>
         [HttpPost]
         [Route("api/AddUserslabel")]
         public async Task<IActionResult> AddLabelbyUserId([FromBody] LabelModel label
@@ -66,6 +77,12 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// api to remove label from note
+        /// </summary>
+        /// <param name="labelId"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("removelabel")]
         public async Task<IActionResult> RemoveLabel(int labelId)
@@ -89,6 +106,12 @@ namespace FundooNotes.Controllers
             }
         }
 
+        /// <summary>
+        /// api to delete label
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="labelName"></param>
+        /// <returns></returns>
         [HttpDelete]
         [Route("api/deleteLabel")]
         public async Task<IActionResult> DeleteLabel(int userId, string labelName)
@@ -108,6 +131,12 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string>() { Status = false, Message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// api to get all label by user id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("getlabelbyUserid")]
         public IActionResult GetLabelByUserid(int userId)
@@ -130,6 +159,12 @@ namespace FundooNotes.Controllers
                 return this.NotFound(new ResponseModel<string> { Status = false, Message = ex.Message });
             }
         }
+
+        /// <summary>
+        /// pi to get all label by note id
+        /// </summary>
+        /// <param name="notesId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("getlabelbynotes")]
         public IActionResult GetLabelByNote(int notesId)
@@ -153,6 +188,13 @@ namespace FundooNotes.Controllers
             }
         }
 
+        /// <summary>
+        /// edits existing label
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="labelName"></param>
+        /// <param name="newLabelName"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("api/editLabel")]
         public async Task<IActionResult> EditLabel(int userId, string labelName, string newLabelName)
@@ -173,6 +215,13 @@ namespace FundooNotes.Controllers
             }
         }
 
+        /// <summary>
+        /// api to edit label
+        /// </summary>
+        /// <param name="noteId"></param>
+        /// <param name="labelName"></param>
+        /// <param name="newLabelName"></param>
+        /// <returns></returns>
         [HttpPut]
         [Route("api/editLabelwithNoteId")]
         public async Task<IActionResult> EditLabelWithNoteId(int noteId, string labelName, string newLabelName)

@@ -7,8 +7,6 @@ namespace FundooRepository.Repository
 {
     public interface ILabelRepository
     {
-        IConfiguration Configuration { get; }
-
         Task<string> AddLabel(LabelModel label);
         Task<string> RemoveLabel(int labelId);
         IEnumerable<string> GetLabelByUserid(int userId);
